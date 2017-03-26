@@ -1,4 +1,6 @@
 *.fig
+*.tmp
+*.o
 .ipynb_checkpoints/
 *.aux
 *.log
