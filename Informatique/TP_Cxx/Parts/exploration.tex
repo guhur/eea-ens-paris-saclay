@@ -183,14 +183,19 @@ De façon imagée, l'ensemble des nœuds ressemble à une chaîne dont les maill
 L'accès aux éléments d'une liste se fait de manière séquentielle : chaque nœud permet l'accès au suivant (contrairement au tableau dans lequel l'accès se fait de manière directe, par adressage de chaque cellule du tableau).
 
 
-\lstinputlisting[language=C++, firstline=1, lastline=54]{Code/ListeChainee.cpp}
+\lstinputlisting[language=C++, firstline=1, lastline=54]{Code/ListeChaineeDebut.cpp}
 
+Différents points sont important de souligner dans cette implémentation :
+\begin{itemize}
+    \item une classe amie \inlinecode{friend class ListeChainee;} donne accès aux membres privés et protégés à l'amie en question ;
+    \item
+\end{itemize}
 
 On propose de compléter cette liste chaînée afin d'en faire un itérateur. Il faudra alors ajouter la possibilité d'incrémenter (\inlinecode{i++}) la chaîne.
 
 \Que{Transformez la classe \inlinecode{ListeChainee} en itérateur. Proposez un exemple d'utilisation avec une boucle \inlinecode{for}.}
 
-\Ans{Correction dans le répertoire git \cite{git}. Notez l'utilisation d'un héritage à la classe \inlinecode{std::iterator}}
+\Ans{Correction dans le répertoire git \cite{git}.}
 
 La liste chaînée n'accepte que des valeurs entières.
 
@@ -198,6 +203,7 @@ La liste chaînée n'accepte que des valeurs entières.
 
 \Ans{Correction dans le répertoire git \cite{git}}
 
+Le cours de David R. Musser \cite{coursLC}  peut compléter cette exercice sur les listes chaînées. Le code proposé est inspiré de celui de cplusplus.com \cite{cplusplus.com}.
 
-
+\todo{transformer ce TP en notebook}
 \end{document}
