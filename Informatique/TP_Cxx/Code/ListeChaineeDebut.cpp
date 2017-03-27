@@ -6,7 +6,8 @@ class Noeud
 	friend class ListeChainee;
 	Noeud () : _suivant(0) {}
 	Noeud (int valeur) : _valeur(valeur), _suivant(0) {}
-	Noeud (int valeur, Noeud* suivant) : _valeur(valeur), _suivant(suivant){}
+	Noeud (int valeur, Noeud* suivant) : _valeur(valeur),
+			_suivant(suivant){}
 	Noeud (Noeud* suivant) : _suivant(suivant) {}
 	int _valeur;
 	Noeud* _suivant;
@@ -37,7 +38,8 @@ public:
 		if (debut)
 		{
 			Noeud *iter = debut;
-			for (; iter->_suivant != 0; iter = iter->_suivant); //parcours de la liste
+			for (; iter->_suivant != 0;
+				iter = iter->_suivant);
 			iter->_suivant = new Noeud(valeur);
 		}
 		else
@@ -65,7 +67,9 @@ public:
 					throw 1;
 			}
 			catch (int e) {
-				std::cerr << "Erreur: le noeud demandé n'existe pas !" << std::endl;
+				std::cerr <<
+					"Erreur: le noeud n'existe pas !"
+					<< std::endl;
 			}
 		return iter->_valeur;
 	}

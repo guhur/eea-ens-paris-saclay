@@ -19,7 +19,6 @@ class Iterateur
 	Iterateur(Noeud* _pNoeud) : pNoeud(_pNoeud) {}
 public:
 	void operator++(){ pNoeud = pNoeud->_suivant; }
-	void operator++(int){ pNoeud = pNoeud->_suivant; }
 	bool operator!=(Iterateur rval){ return !(pNoeud == rval.pNoeud); }
 	bool operator==(Iterateur rval){ return (pNoeud == rval.pNoeud); }
 	int operator*(){	return pNoeud->_valeur; }

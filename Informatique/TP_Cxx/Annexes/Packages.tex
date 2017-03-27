@@ -1,6 +1,7 @@
 \usepackage{url}
 \usepackage[utf8]{inputenc}
 \newcommand{\inlinecode}{\texttt}
+\usepackage{microtype}
 % \usepackage[colorlinks]{hyperref}
 
 % math and cs
@@ -12,8 +13,14 @@
 % style
 % \usepackage{booktabs}
 % \usepackage{multirow}
-\usepackage{listings} % color code
-% \usepackage{minted}
+\usepackage{listings} % code highlighting
+\lstset{language=C++,
+                basicstyle=\ttfamily,
+                keywordstyle=\color{blue}\ttfamily,
+                stringstyle=\color{red}\ttfamily,
+                commentstyle=\color{green}\ttfamily,
+                morecomment=[l][\color{magenta}]{\#}
+}
 \usepackage{todonotes}
 \usepackage{standalone}
 
@@ -30,18 +37,18 @@
 \makeglossaries
 \usepackage[xindy]{imakeidx}
 \makeindex
-\newcommand{\eg}{e.\,g.,\ }
-\newcommand{\ie}{i.\,e.,\ }
+
 
 
 
 % questions
+\newcounter{question}
 \newcommand\Que[1]{%
     \bfseries
    \leavevmode\par
    \stepcounter{question}
    \noindent
-   \thequestion.  --- #1\par\mdseries}
+   Q  --- #1\par\mdseries}
 
 
 % reponses
@@ -57,3 +64,28 @@
 
 
 \newcommand\darwin{\texttt darwin-op}
+
+
+
+
+
+
+
+
+
+
+
+\newglossaryentry{firmware}{
+    name={firmware},
+    description={programme intégré dans un matériel informatique (ordinateur, photocopieur, automate (API, APS), disque dur, routeur, appareil photo numérique, etc.) pour qu'il puisse fonctionne}
+}
+
+
+\newglossaryentry{framework}{
+    name={framework},
+    description={ensemble cohérent de composants logiciels structurels, qui sert à créer les fondations ainsi que les grandes lignes de tout ou d’une partie d'un logiciel (architecture)}
+}
+\newglossaryentry{instance}{
+    name={instance},
+    description={objet constituant un exemplaire de la classe}
+}

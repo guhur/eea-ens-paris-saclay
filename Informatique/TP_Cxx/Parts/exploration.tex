@@ -1,4 +1,4 @@
-\documentclass[conference]{IEEEtran}
+\documentclass[abstracton]{scrartcl}
 \newcommand*{\rootPath}{../}
 \input{\rootPath Annexes/Packages.tex}
 
@@ -68,7 +68,7 @@ Nous allons désormais visiter le code correspondant pour comprendre les initial
 \Ans{Quelques instances.
 \begin{itemize}
     \item \lstinline{minIni* ini = new minIni(INI_FILE_PATH);} parse le fichier de configuration.
-    \item \lstinline{$Image* rgb_output = new Image(Camera::WIDTH, Camera::HEIGHT, Image::RGB_PIXEL_SIZE);$} créé une nouvelle image. Il est intéressant de noter que l'on utilise un attribut statique de cette même classe \lstinline{Image::RGB_PIXEL_SIZE}.
+    \item \lstinline{Image* rgb_output = new Image(Camera::WIDTH, Camera::HEIGHT,} \lstinline{Image::RGB_PIXEL_SIZE);} créé une nouvelle image. Il est intéressant de noter que l'on utilise un attribut statique de cette même classe \lstinline{Image::RGB_PIXEL_SIZE}.
 \end{itemize}
 Le mot clé new alloue de la mémoire dans l'espace libre. Il faut donc écrire un delete pour le supprimer. On obtient alors un pointeur vers l'objet. Sans le mot new, l'allocation est directement dans la pile et l'objet est détruit en sortant de la zone de code correspondante.}
 
@@ -77,8 +77,13 @@ Pour tracer un diagramme de classes, on peut utiliser MagicDraw : on créé un n
 
 \Que{Tracer le diagramme de classes pour \inlinecode{Head}, \inlinecode{MotionModule}, \inlinecode{Walking} et \inlinecode{Action}. Quelles sont les relations entre ces classes ?}
 
-\Ans{Relation de généralisation : les classes héritent de MotionModule. Relation d'agrégation : les classes de type
-\includegraphics{diagramme-classes.png}}
+\Ans{Relation de généralisation : les classes héritent de MotionModule. Diagramme des classes dans la figure \ref{fig:d-classes}
+\begin{figure}[htb!]
+\includegraphics[width=\textwidth]{\rootPath diagramme-classes.png}
+\label{fig:d-classes}
+\caption{Diagramme de classes}
+\end{figure}
+}
 
 
 
@@ -89,13 +94,15 @@ La notion de généricité définit des objets paramétrés par le type qu'ils m
 Un objet générique n'est alors pas directement utilisable : c'est plutôt un patron de module qui sera instancié par les types paramètres qu'il accepte.
 
 
-\Que{Ouvrez les fichiers \inlinecode{Framework/src/motion/MotionManager.cpp} et \inlinecode{Framework/include/MotionManager.h}. Quelle est la relation entre la classe MotionManager et MotionModule ?}
+\Que{Ouvrez les fichiers \inlinecode{Framework/src/motion/MotionManager.cpp} et \inlinecode{Framework/ include/MotionManager.h}. Quelle est la relation entre la classe MotionManager et MotionModule ?}
 
 
-\Ans{Relation d'agrégation : les classes de type MotionModule peuvent facultativement être ajoutées à la liste \lstinline{std::list<MotionModule*> m_Modules;} }
+\Ans{Relation d'agrégation : les classes de type MotionModule peuvent facultativement être ajoutées à la liste
+
+ \lstinline{std::list<MotionModule*> m_Modules;} }
 
 \subsubsection{Containeur}
-L'attribut \lstinline{m_Modules} est en fait un containeur. Il permet de stocker des objets de n'importe quel type (celui en paramètre de la liste), à partir du moment où la classe correspondante est dotée d'un certain nombre de méthodes nécessaires à la librairie \inlinecode{stl} (pour une classe X) :
+L'attribut \lstinline{m_Modules} est un containeur décrit par une STL liste. Il stocke des objets de n'importe quel type (celui en paramètre de la liste), à partir du moment où la classe correspondante est dotée d'un certain nombre de méthodes nécessaires à la librairie \inlinecode{STL} (pour une classe X) :
 \begin{itemize}
     \item \lstinline{X()} : un constructeur par défaut,
     \item \lstinline{X(const X&)} : un constructeur par copie,
@@ -103,17 +110,59 @@ L'attribut \lstinline{m_Modules} est en fait un containeur. Il permet de stocker
     \item \lstinline{operator==(const X&)} : l'opérateur d'égalité,
     \item \lstinline{operator<(const X&)} : l'opérateur inférieur (utile uniquement pour les tris).
 \end{itemize}
-Cela peut se réaliser grâce au mot-clé "template":
-\lstinline{template < class T, class Alloc = allocator<T> > class list;}
-\todo{meilleur ex?}
 
-Cependant, cela demande aussi que Head, Walking et Action soient compris comme des classes MotionModule.
+La liste stocke aussi bien des instances Head, Walking que Action. Tous ces objets doivent donc être compris soient compris comme des objets MotionModule.
 
 \Que{Comment cela est-il possible ? Finalement, pouvez-vous expliquer qu'il n'existe pas de fichiers MotionModule.cpp ? Expliquez la présence du mot clé \lstinline{virtual} dans le fichier \inlinecode{Framework/include/MotionModule.h}. Comment peut-on alors qualifier la classe MotionModule ?}
 
 \Ans{C'est parce que ces classes héritent toutes de MotionModule. Il n'existe pas d'implémentation de MotionModule car on n'utilise que ses classes filles. Le mot clé virtual signifie que la méthode doit être implémentée car les classes filles. La classe est dite abstraite car toutes ses méthodes sont virtuelles.}
 
- MotionModule est un interface. \todo{approfondir}
+ % MotionModule est un interface. \todo{approfondir}
+
+\subsubsection{Templates}
+
+Comment se fait-il qu'une STL liste puisse accepter n'importe quel type d'objets ? C'est grâce aux \inlinecode{templates}.
+Les templates  paramétrisent le type d'une classe ou d'une fonction, simplement en précédent sa définition de :
+
+ \lstinline{template<typename Type>}
+
+Lorsqu'on attend une classe elle-même liée à un template \cite{diffClassTypename}, on écrira plutôt :
+
+ \lstinline{template<class Classe>}
+
+
+Par exemple, une fonction addition est définie par :
+\begin{lstlisting}
+double addition(double a, double b)
+{
+    double resultat = a + b;
+    return resultat;
+}
+int main () {
+double somme = addition(1.5, 1.5);
+cout <<  somme << endl;
+}
+\end{lstlisting}
+
+Plutôt que de réécrire cette fonction pour des int, on peut la modifier en :
+\begin{lstlisting}
+template<typename Type> Type
+    calculerSomme(Type operande1, Type operande2)
+{
+    Type resultat = operande1 + operande2;
+    return resultat;
+}
+int main () {
+int somme = addition(1, 2);
+cout <<  somme << endl;
+}
+\end{lstlisting}
+
+ Lorsqu'on instancie une classe, on précise alors le type dans les crochets, comme vu précédemment :
+
+ \lstinline{std::list<MotionModule*> m_Modules;}
+
+
 
 
 \subsubsection{Itérateur}
@@ -121,7 +170,8 @@ Cependant, cela demande aussi que Head, Walking et Action soient compris comme d
 Dans le fichier MotionModule.cpp, on retrouve les lignes de code suivantes :
 
 \begin{lstlisting}
-    for(int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)
+    for(int id=JointData::ID_R_SHOULDER_PITCH;
+        id<JointData::NUMBER_OF_JOINTS; id++)
     {
         // ...
     }
@@ -135,7 +185,8 @@ La structure \lstinline{enum} est un cas particulier des itérateurs, lesquels s
 
 Les containeurs sont souvent dotés d'une méthode begin qui renvoie un itérateur sur le premier de leurs éléments, et d'une méthode end qui renvoie un itérateur sur une place se trouvant juste après le dernier de leurs éléments. Un autre exemple se trouve dans \inlinecode{/Framework/src/motion/MotionManager.cpp} à la ligne 268 :
 \begin{lstlisting}
-    for(std::list<MotionModule*>::iterator i = m_Modules.begin(); i != m_Modules.end(); i++)
+    for(std::list<MotionModule*>::iterator i = m_Modules.begin();
+        i != m_Modules.end(); i++)
 \end{lstlisting}
 
 \subsubsection{Singleton design pattern}
@@ -170,40 +221,68 @@ Dans cette exemple, il est notable que l'instanciation retourne un pointeur vers
 
 \Que{Retrouvez un exemple de ce design dans le Framework.}
 
-\Ans{Par exemple:
+\Ans{
 \lstinline{MotionManager* MotionManager::m_UniqueInstance = new MotionManager();} }
 
 
 \subsection{Exercice}
 
 On propose désormais un court exercice pour mettre en œuvre ces notions de généricité.
-Le code suivant réalise une liste chaînée.
+Le code suivant  réalise une liste chaînée. Il est disponible au téléchargement \cite{listeChainee}
 Une liste chaînée est une structure de données représentant une collection ordonnée et de taille arbitraire d'éléments de même type, dont la représentation en mémoire de l'ordinateur est une succession de nœuds faites d'un contenu et d'un pointeur vers un autre nœud.
 De façon imagée, l'ensemble des nœuds ressemble à une chaîne dont les maillons seraient les nœuds.
 L'accès aux éléments d'une liste se fait de manière séquentielle : chaque nœud permet l'accès au suivant (contrairement au tableau dans lequel l'accès se fait de manière directe, par adressage de chaque cellule du tableau).
+%
+% \subsubsection{Installation de Jupyter}
+%
+% L'exercice est implémenté sur un Notebook. L'installation peut s'avérer délicate et est conseillée sur une machine UNIX.
+% Elle consiste aux étapes suivantes :
+% \begin{enumerate}
+%     \item Installation de anaconda : \url{https://www.continuum.io/downloads}.
+%     \item Jupyter doit être alors installé. Redémarrez le terminal et lancez \inlinecode{jupyter-notebook}. Si cela ne marche pas, vérifiez que \inlinecode{export PATH=$HOME/anaconda/bin:$PATH} est dans \url{~/.bashrc}.
+%     \item Téléchargement du kernel C++ depuis la page ;
+% \end{enumerate}
 
 
-\lstinputlisting[language=C++, firstline=1, lastline=54]{Code/ListeChaineeDebut.cpp}
+\lstinputlisting[language=C++, firstline=1, lastline=73]{\rootPath Code/ListeChaineeDebut.cpp}
 
 Différents points sont important de souligner dans cette implémentation :
 \begin{itemize}
-    \item une classe amie \inlinecode{friend class ListeChainee;} donne accès aux membres privés et protégés à l'amie en question ;
+    \item une classe amie \lstinline{friend class ListeChainee;} donne accès aux membres privés et protégés à l'amie en question ;
+    \item la structure	\lstinline{try ... catch} permet de gérer les exceptions ;
     \item
 \end{itemize}
 
-On propose de compléter cette liste chaînée afin d'en faire un itérateur. Il faudra alors ajouter la possibilité d'incrémenter (\inlinecode{i++}) la chaîne.
+On propose de compléter cette liste chaînée afin d'en faire un itérateur. Pour cela, on créera une nouvelle classe \lstinline{Iterateur}, qui va gérer un curseur sur un nœud (dont le pointeur est stocké dans un attribut). Cette classe doit implémenter les méthodes suivantes :
+\begin{itemize}
+    \item \lstinline{void operator++();}
+	\item \lstinline{bool operator!=(Iterateur rval);}
+	\item \lstinline{bool operator==(Iterateur rval);}
+	\item \lstinline{int operator*();}
+\end{itemize}
+En outre, il faudra préciser que \lstinline{Iterateur} est une classe amie de \lstinline{Noeud} et que \lstinline{ListeChainee} est une classe amie de \lstinline{Iterateur}. Enfin, les méthodes \lstinline{Iterateur begin(); } et \lstinline{Iterateur end(); } seront ajoutées à la classe \lstinline{ListeChainee}.
 
-\Que{Transformez la classe \inlinecode{ListeChainee} en itérateur. Proposez un exemple d'utilisation avec une boucle \inlinecode{for}.}
+
+\Que{Implémentez l'itérateur des nœuds. Proposez un exemple de boucle \lstinline{for} pour parcourir la liste chaînée.}
 
 \Ans{Correction dans le répertoire git \cite{git}.}
 
-La liste chaînée n'accepte que des valeurs entières.
+La liste chaînée n'accepte que des valeurs entières. On propose maintenant d'ajouter des templates pour utiliser un autre type d'objet nommé $T$. Un nœud est désormais parametré selon $T$. Ainsi, les classes vont devenir :
+\begin{itemize}
+    \item \lstinline{template <typename T> class ListeChainee},
+    \item \lstinline{template <class TNoeud>   class Iterateur},
+    \item \lstinline{template <typename T> class Noeud}.
+\end{itemize}
+Cela signifie que ces classes sont utilisées de la manière suivante :
+\lstinline{ListeChainee<int>, Noeud<int>, Iterateur< Noeud<int> >}.
+Dans l'utilisation de la liste chaînée, le type n'est en réalité précisé que pour \lstinline{ListeChainee} : \lstinline{ListeChainee<int> liste; liste.push_back(3);}.
+%Il s'avère nécessaire de mémoriser ce type dans la classe \lstinline{Noeud} grâce à \lstinline{typedef T valeur_type}. Le type est alors accessible par \lstinline{typename TNoeud::valeur_type}.
 
-\Que{Modifiez la pour accepter tout type d'objet à l'aide d'un template}
+\Que{Modifiez le code pour accepter d'autres types d'objet que int.}
 
 \Ans{Correction dans le répertoire git \cite{git}}
 
-Le cours de David R. Musser \cite{coursLC}  peut compléter cette exercice sur les listes chaînées. Le code proposé est inspiré de celui de cplusplus.com \cite{cplusplus.com}.
+Le cours de David R. Musser \cite{coursLC}  peut compléter cette exercice sur les listes chaînées. Le code proposé est inspiré de celui de cplusplus.com \cite{cplusplus}.
 
 \todo{transformer ce TP en notebook}
 \end{document}
