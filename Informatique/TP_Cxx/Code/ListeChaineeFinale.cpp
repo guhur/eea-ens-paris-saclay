@@ -100,10 +100,8 @@ public:
 	iterator begin(){ return iterator(first); }
 	iterator end(){ return iterator(0); }
 
-	bool erase(iterator& _iNoeud) //True for success, vice versa
+	bool effacer(iterator& _iNoeud)
 	{
-		/* This is rather inneffecient. Maybe a better way to do this? */
-		/* Even then, it's *still* more effecient than a contiguous container */
 		if (_iNoeud.pNoeud == first)
 		{
 			first = first->_suivant;
@@ -129,15 +127,14 @@ public:
 
 int main(void)
 {
-	ListeChainee<int> ListeChainee;
-	ListeChainee.push_back(3);
-	ListeChainee.push_back(4);
-	ListeChainee.push_front(2);
-	ListeChainee.push_front(1);
+	ListeChainee<int> liste;
+	liste.push_back(3);
+	liste.push_back(4);
+	liste.push_front(2);
+	liste.push_front(1);
 
-	/*Print all elements*/
-	for (ListeChainee<int>::iterator iter = ListeChainee.begin();
-	     iter != ListeChainee.end(); ++iter)
+	for (ListeChainee<int>::iterator iter = liste.begin();
+	     iter != liste.end(); ++iter)
 	{
 		std::cout << (*iter) << std::endl;
 	}
