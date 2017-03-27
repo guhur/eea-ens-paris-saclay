@@ -1,0 +1,59 @@
+\usepackage{url}
+\usepackage[utf8]{inputenc}
+\newcommand{\inlinecode}{\texttt}
+% \usepackage[colorlinks]{hyperref}
+
+% math and cs
+% \usepackage[lined,boxed,commentsnumbered]{algorithm2e}
+% \usepackage{amsmath}
+% \usepackage{amssymb}
+% \usepackage{mathrsfs}
+
+% style
+% \usepackage{booktabs}
+% \usepackage{multirow}
+\usepackage{listings} % color code
+% \usepackage{minted}
+\usepackage{todonotes}
+\usepackage{standalone}
+
+
+% graph
+\usepackage{graphicx}
+\usepackage[outdir=./]{epstopdf}
+\usepackage{array}
+
+
+
+% \usepackage[french]{babel}
+\usepackage[nomain,acronym,xindy,toc]{glossaries}
+\makeglossaries
+\usepackage[xindy]{imakeidx}
+\makeindex
+\newcommand{\eg}{e.\,g.,\ }
+\newcommand{\ie}{i.\,e.,\ }
+
+
+
+% questions
+\newcommand\Que[1]{%
+    \bfseries
+   \leavevmode\par
+   \stepcounter{question}
+   \noindent
+   \thequestion.  --- #1\par\mdseries}
+
+
+% reponses
+\def\showanswers{1}% Set this =0 to hide, =1 to show
+\newcommand\Ans[2][]{%
+    \ifnum\showanswers=1
+        \bfseries
+        \leavevmode\par\noindent
+       {\leftskip37pt
+        R --- \textbf{#1}#2\par}\mdseries
+    \fi
+}
+
+
+\newcommand\darwin{\texttt darwin-op}

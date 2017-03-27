@@ -1,0 +1,203 @@
+\documentclass[conference]{IEEEtran}
+\newcommand*{\rootPath}{../}
+\input{\rootPath Annexes/Packages.tex}
+
+\standalonetrue
+
+\begin{document}
+\lstset{language=C++}
+%%=============================================================================
+
+
+
+%%=============================================================================
+%-------------------------------------------------------------------------------
+%   EXPLORATION DE DARWIN-OP
+%-------------------------------------------------------------------------------
+
+\section{Exploration du robot Darwin-Op}
+\label{sec:exploration}
+
+Le robot darwin-op repose sur un cœur Linux et un \gls{framework} développé spécialement pour lui. L'objectif de cette partie est de prendre connaissances du robot, puis de tracer son architecture et le diagramme de classes de son framework. Enfin, nous chercherons à justifier certains choix de conception.
+
+
+\subsection{Présentation du robot}
+
+Darwin-op est l'acronume de "Dynamic Anthropomorphic Robot with Intelligence–Open Platform". C'est un robot humanoïde miniature (45 cm pour 2.9 kg), capable de marcher (environ 30 cm/s), de se relever (environ 3s), équipé d'une grande capacité de calculs (1.6 GHz Intel Atom Z530 (32 bit) et 4 GB flash SSD), de capteurs avancées (caméra, gyroscope 3 axes, accéléromètre 3 axes, 2 microphones). Il a été développé et construit par l'industriel coréen ROBOTIS en collaboration avec Virginia Tech, Purdue University et l'University of Pennsylvania. DARWIN-OP a 22 degrées de libertés (6 pour chaque jambe, 5 pour chaque bras, 2 pour le cou) contrôlées par des servo-moteurs DYNAMIXEL MX-28T. Le MX-28T a un couple de 24 kgf·cm (à 12 V, 1.5 A) et un déplacement angulaire de 360 degrées.
+
+
+\subsection{Connexion au robot}
+
+Le robot peut être interfacé de différentes manières :
+\begin{itemize}
+    \item  par Ethernet avec un câble RJ45 :
+    configurer son adresse IP en 192.168.123.100 et le masque de réseau en 255.255.255.0.
+    L'adresse du robot est 192.168.123.1.
+    Ou bien,  connecter le cable Ethernet au réseau local de la salle.
+    \item  par Wi-Fi : un compte Cr@ns est disponible (darwin-op et pi5vrb75uu).
+\end{itemize}
+
+Une fois reliée, la communication peut se faire par une connexion série (en utilisant Minicom ou PuTTY par exemple), ou SSH. Dans ce dernier cas, on lancera la commande
+    \inlinecode{ssh -X darwin@darwin.peea.ens-cachan.fr} suivie du mot de passe 111111.
+    Passer en root avec \inlinecode{sudo -s}.
+
+Si on connecte le robot à un écran (un port HDMI le permet), on pensera à redémarrer le robot.
+
+
+\subsection{Découverte de l'architecture}
+
+La commande \inlinecode{tree} permet de tracer l'arbre hiérarchique des fichiers dans un répertoire. L'option "-L" limite le nombre de niveaux à visualiser
+
+\Que{ Tracez l'arbre des dossiers à la racine du système de fichiers avec 2 niveaux. Que remarquez-vous de particulier par rapport à un système Linux classique ?}
+Il se peut que tree ne soit pas installé par défaut. On peut l'installer avec la commande : \inlinecode{apt-get install tree}.
+
+\Ans{On doit remarquer que le dossier /darwin existe et préciser son contenu (Data = données de mouvements et de sons, Framework = classes utilisées par le robot, Linux = interface entre les composants). Si le code n'existe pas, on peut le réinstaller depuis le répertoire Git.}
+
+Le dossier darwin contient l'ensemble des programmes propres au robot, et en particulier, il permet d'interfacer les composants matériels propres à darwin-op, avec en particulier le sous-contrôleur CM730, qui réalise les tâches en temps réel.
+
+Différents projets sont proposés par le fabriquant dans le dossier \inlinecode{Linux/project}. Nous allons tester \inlinecode{demo}.
+
+\Que{Compilez le code et lancez son éxecution. Le robot doit suivre une balle rouge présentée sous ses yeux.}
+
+\Ans{On se déplace dans le dossier : \inlinecode{cd /darwin/Linux/project/demo},  on compile : \inlinecode{make}, on change les droits d'éxecution : \inlinecode{chmod u+x demo}, puis on éxecute le programme : \inlinecode{./demo}}
+
+Nous allons désormais visiter le code correspondant pour comprendre les initialisations réalisées.
+
+\Que{Ouvrez le fichier \inlinecode{main.cpp} avec un éditeur de texte, puis relevez quelques \gls{instance}s de classe. À votre avis, à quoi correspondent-elles ? Pourquoi certaines utilisent le mot \inlinecode{new} ? }
+
+\Ans{Quelques instances.
+\begin{itemize}
+    \item \lstinline{minIni* ini = new minIni(INI_FILE_PATH);} parse le fichier de configuration.
+    \item \lstinline{$Image* rgb_output = new Image(Camera::WIDTH, Camera::HEIGHT, Image::RGB_PIXEL_SIZE);$} créé une nouvelle image. Il est intéressant de noter que l'on utilise un attribut statique de cette même classe \lstinline{Image::RGB_PIXEL_SIZE}.
+\end{itemize}
+Le mot clé new alloue de la mémoire dans l'espace libre. Il faut donc écrire un delete pour le supprimer. On obtient alors un pointeur vers l'objet. Sans le mot new, l'allocation est directement dans la pile et l'objet est détruit en sortant de la zone de code correspondante.}
+
+Différentes classes du framework sont ici employées. Nous allons désormais les explorer à l'aide d'un diagramme de classes.
+Pour tracer un diagramme de classes, on peut utiliser MagicDraw : on créé un nouveau projet "Software Engineering" : "Project from Existing Source Code", puis on sélectionne tous les fichiers concernés, et on clique droit pour générer le diagramme.
+
+\Que{Tracer le diagramme de classes pour \inlinecode{Head}, \inlinecode{MotionModule}, \inlinecode{Walking} et \inlinecode{Action}. Quelles sont les relations entre ces classes ?}
+
+\Ans{Relation de généralisation : les classes héritent de MotionModule. Relation d'agrégation : les classes de type
+\includegraphics{diagramme-classes.png}}
+
+
+
+\subsection{Notion de généricité}
+
+La notion de généricité définit des objets paramétrés par le type qu'ils manipulent. Nous allons voir que la classe ModuleManager peut manier indifféremment les classes Head, Walking et Action.
+
+Un objet générique n'est alors pas directement utilisable : c'est plutôt un patron de module qui sera instancié par les types paramètres qu'il accepte.
+
+
+\Que{Ouvrez les fichiers \inlinecode{Framework/src/motion/MotionManager.cpp} et \inlinecode{Framework/include/MotionManager.h}. Quelle est la relation entre la classe MotionManager et MotionModule ?}
+
+
+\Ans{Relation d'agrégation : les classes de type MotionModule peuvent facultativement être ajoutées à la liste \lstinline{std::list<MotionModule*> m_Modules;} }
+
+\subsubsection{Containeur}
+L'attribut \lstinline{m_Modules} est en fait un containeur. Il permet de stocker des objets de n'importe quel type (celui en paramètre de la liste), à partir du moment où la classe correspondante est dotée d'un certain nombre de méthodes nécessaires à la librairie \inlinecode{stl} (pour une classe X) :
+\begin{itemize}
+    \item \lstinline{X()} : un constructeur par défaut,
+    \item \lstinline{X(const X&)} : un constructeur par copie,
+    \item \lstinline{operator=(const X&)} : l'opérateur d'affectation,
+    \item \lstinline{operator==(const X&)} : l'opérateur d'égalité,
+    \item \lstinline{operator<(const X&)} : l'opérateur inférieur (utile uniquement pour les tris).
+\end{itemize}
+Cela peut se réaliser grâce au mot-clé "template":
+\lstinline{template < class T, class Alloc = allocator<T> > class list;}
+\todo{meilleur ex?}
+
+Cependant, cela demande aussi que Head, Walking et Action soient compris comme des classes MotionModule.
+
+\Que{Comment cela est-il possible ? Finalement, pouvez-vous expliquer qu'il n'existe pas de fichiers MotionModule.cpp ? Expliquez la présence du mot clé \lstinline{virtual} dans le fichier \inlinecode{Framework/include/MotionModule.h}. Comment peut-on alors qualifier la classe MotionModule ?}
+
+\Ans{C'est parce que ces classes héritent toutes de MotionModule. Il n'existe pas d'implémentation de MotionModule car on n'utilise que ses classes filles. Le mot clé virtual signifie que la méthode doit être implémentée car les classes filles. La classe est dite abstraite car toutes ses méthodes sont virtuelles.}
+
+ MotionModule est un interface. \todo{approfondir}
+
+
+\subsubsection{Itérateur}
+
+Dans le fichier MotionModule.cpp, on retrouve les lignes de code suivantes :
+
+\begin{lstlisting}
+    for(int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)
+    {
+        // ...
+    }
+\end{lstlisting}
+
+\Que{Retrouvez la déclaration de JointData. Comment se fait-il que nous puissions itérer sur cette structure ? Comment \lstinline{NUMBER_OF_JOINTS} peut-il prendre la bonne valeur ?}
+
+\Ans{JointData est défini dans \inlinecode{Framework/include/JointData.h}. Il s'agit d'une structure \lstinline{enum}. À chaque énumérateur, une valeur est associée du type sous-jacent. Par défaut, la première valeur est 0, tandis que les autres valeurs sont égales à la valeur de l'énumérateur précédent incrémenté de 1. En C++ (ce n'est pas le cas en java par exemple), on peut naturellement donc itérer sur les enum. De plus, \lstinline{NUMBER_OF_JOINTS} vaut bien le nombre d'éléments car la liste commence à 1.}
+
+La structure \lstinline{enum} est un cas particulier des itérateurs, lesquels sont une généralisation des pointeurs. Ils permettent au programmeur de travailler avec des containers différents de façon uniforme.
+
+Les containeurs sont souvent dotés d'une méthode begin qui renvoie un itérateur sur le premier de leurs éléments, et d'une méthode end qui renvoie un itérateur sur une place se trouvant juste après le dernier de leurs éléments. Un autre exemple se trouve dans \inlinecode{/Framework/src/motion/MotionManager.cpp} à la ligne 268 :
+\begin{lstlisting}
+    for(std::list<MotionModule*>::iterator i = m_Modules.begin(); i != m_Modules.end(); i++)
+\end{lstlisting}
+
+\subsubsection{Singleton design pattern}
+
+La programmation C++ est si riche de fonctionnalités, que plusieurs modèles de programmation ont émergé pour standardiser les bonnes pratiques.
+L'étudiant intrigué pourra se référer au livre "Design Pattern" \cite{gamma1995design} pour en savoir plus.
+
+Le design du singleton garantit qu'une classe est instanciée une seule fois et pas plus. C'est souvent utilisé pour logger des informations, de sorte à éviter des conflits de gestion des ressources. Par exemple :
+
+
+
+\begin{lstlisting}
+#include <string>
+
+class Logger{
+
+public:
+   static Logger* Instance();
+   bool openLogFile(std::string logFile);
+   void writeToLogFile();
+   bool closeLogFile();
+
+private:
+   Logger(){};  // on ne peut le construire depuis l'exterieur
+   Logger(Logger const&){};
+   Logger& operator=(Logger const&){};
+   static Logger* m_pInstance; // stocke sa propre instanciation
+
+};
+\end{lstlisting}
+Dans cette exemple, il est notable que l'instanciation retourne un pointeur vers une variable statique. Seule la méthode Instance peut appeler le constructeur.
+
+\Que{Retrouvez un exemple de ce design dans le Framework.}
+
+\Ans{Par exemple:
+\lstinline{MotionManager* MotionManager::m_UniqueInstance = new MotionManager();} }
+
+
+\subsection{Exercice}
+
+On propose désormais un court exercice pour mettre en œuvre ces notions de généricité.
+Le code suivant réalise une liste chaînée.
+Une liste chaînée est une structure de données représentant une collection ordonnée et de taille arbitraire d'éléments de même type, dont la représentation en mémoire de l'ordinateur est une succession de nœuds faites d'un contenu et d'un pointeur vers un autre nœud.
+De façon imagée, l'ensemble des nœuds ressemble à une chaîne dont les maillons seraient les nœuds.
+L'accès aux éléments d'une liste se fait de manière séquentielle : chaque nœud permet l'accès au suivant (contrairement au tableau dans lequel l'accès se fait de manière directe, par adressage de chaque cellule du tableau).
+
+
+\lstinputlisting[language=C++, firstline=1, lastline=54]{Code/ListeChainee.cpp}
+
+
+On propose de compléter cette liste chaînée afin d'en faire un itérateur. Il faudra alors ajouter la possibilité d'incrémenter (\inlinecode{i++}) la chaîne.
+
+\Que{Transformez la classe \inlinecode{ListeChainee} en itérateur. Proposez un exemple d'utilisation avec une boucle \inlinecode{for}.}
+
+\Ans{Correction dans le répertoire git \cite{git}. Notez l'utilisation d'un héritage à la classe \inlinecode{std::iterator}}
+
+La liste chaînée n'accepte que des valeurs entières.
+
+\Que{Modifiez la pour accepter tout type d'objet à l'aide d'un template}
+
+\Ans{Correction dans le répertoire git \cite{git}}
+
+
+
+\end{document}

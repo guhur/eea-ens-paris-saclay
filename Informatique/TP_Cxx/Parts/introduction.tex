@@ -1,0 +1,42 @@
+\documentclass[conference]{IEEEtran}
+\newcommand*{\rootPath}{../}
+\input{\rootPath Annexes/Packages.tex}
+
+\standalonetrue
+
+\begin{document}
+
+%%=============================================================================
+
+
+
+%%=============================================================================
+%-------------------------------------------------------------------------------
+%   INTRODUCTION
+%-------------------------------------------------------------------------------
+
+\section{Introduction}
+\label{sec:intro}
+
+
+Chaque langage de programmation développe une propre philosophie, et chaque philosophie peut être appréhendée par les paradigmes de programmation.
+
+Décrite par son fondateur Bjarne Stroustrup \cite{stroustrup}, la philosophie du C++ propose entre autres de :
+\begin{itemize}
+    \item laisser le choix d'un style de programmation aux développeurs ;
+    \item apporter les options utiles est plus important que de veiller à ce qu'elle soit mal utilisée ;
+    \item organiser les programmes de manière séparés et bien définies.
+\end{itemize}
+Cela signifie que le développeur a une grande liberté dans son utilisation du langage. Pour éviter de produire un code difficile à relire ou à étendre \cite{stroustrup2}, le développeur doit donc comprendre les paradigmes utilisés.
+
+Le C++ utilise la programmation orientée objet et générique. C'est une extension de la programmation procédurale (utilisée en C par exemple). Dans cette dernière, des fonctions sont utilisées, ce qui permet d'éviter des redondances de code et de mettre en place des algorithmes récursifs.
+La programmation orientée objet et générique utilise les notions de classes et de modèles pour mutualiser et unifier les informations entre différentes entitées.
+
+
+Ce travail pratique va explorer ces notions au travers d'exemples de difficultés progressives sur le robot darwin-ops.
+Dans une première partie, le robot darwin-op et son framework sont explorés.
+Dans une seconde partie, un module de mouvement (MotionModule) est intégré.
+
+Le texte du TP et le code utilisé sont dispobles sur le répertoire git \cite{git}. En cas d'erreurs ou de mises-à-jour, merci de lancer un pull-request.
+
+\end{document}

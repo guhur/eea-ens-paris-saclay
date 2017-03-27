@@ -1,0 +1,76 @@
+\documentclass[conference]{IEEEtran}
+\newcommand*{\rootPath}{../}
+\input{\rootPath Annexes/Packages.tex}
+
+\standalonetrue
+
+\begin{document}
+
+%%=============================================================================
+
+
+
+%%=============================================================================
+%-------------------------------------------------------------------------------
+%   MOUVEMENT
+%-------------------------------------------------------------------------------
+
+\section{Recopie du mouvement d'un bras}
+\label{sec:intro}
+
+\subsection{Présentation du projet}
+Tandis que la partie précédente revisitait les concepts du langage C++, on propose désormais d'écrire un nouveau projet pour le framework \darwin.
+Ce dernier va recopier les mouvements imposés au bras droit sur le gras gauche.
+
+Pour faciliter la programmation, on différenciera les fichiers suivants:
+\begin{itemize}
+    \item Arm.cpp et Arm.h formeront un MotionModule, appelé Arm,
+    pour proposer une interface de gestion d'un bras. On placera ces fichiers dans \inlinecode{Framework/src/motion/modules} et \inlinecode{Framework/include}.
+    \item  \inlinecode{main.cpp}, situé dans
+    \inlinecode{\url{Linux/project/recopier_bras}},
+    lancera le programme et éxecutera les méthodes de Arm.
+\end{itemize}
+
+\subsection{Classe Arm}
+
+La classe Arm contiendra les attributs et méthodes suivantes :
+\begin{itemize}
+    % \item GetLeftArm permettra de choisir ces bras ;
+    \item AddMotors ;
+    \item GetMotorsValues retournera les valeurs des servo-moteurs du bras ;
+    \item Scan retournera un tableau avec les positions sur les servo-moteurs ;
+    \item Apply prendra en argument un tableau d'ordres sur les servo-moteurs de hardArm et appliquera ces ordres ;
+    \item PutSoft et PutHard rendront respectivement le bras mou (on peut imposer manuellement un mouvement) ou dur (on ne peut pas).
+\end{itemize}
+
+\Que{Tracez le diagramme de classes de Arm et des objets auxquels Arm se réfère.}
+
+\Ans{\todo{à faire}}
+
+\Que{Programmez \inlinecode{Arm.cpp} et \inlinecode{Arm.h}. Aucun test ne sera pour le moment effectué.}
+
+\Ans{cf. répertoire git.}
+
+
+\subsection{Projet recopier\_bras}
+
+Ainsi, le fichier main.cpp suivra l'algorithme suivant :
+\begin{enumerate}
+    \item initialiser le module Arm pour les bras softArm (celui dont on impose manuellement le mouvement) et hardArm (celui qui recopie les mouvements) ;
+    \item faire un boucle infini avec :
+    \item enregistrer les informations sur softArm ;
+    \item appliquer les valeurs sur hardArm.
+\end{enumerate}
+
+\Que{Réalisez ce programme. On ne demande pas de compiler le fichier}
+\Ans{cf. répertoire git.}
+
+\subsection{Compilation}
+
+Pour compiler le code, on partira d'un Makefile pré-existant, par exemple celui contenu dans \inlinecode{\url{Linux/project/walk_tuner}}.
+
+\Que{Adaptez le Makefile puis lancer la compilation du projet en lançant \inlinecode{make} depuis le dossier du projet. Corrigez d'éventuels erreurs sur le programme puis testez le.}
+\Ans{cf. répertoire git.}
+
+
+\end{document}

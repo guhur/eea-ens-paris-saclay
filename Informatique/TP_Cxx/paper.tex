@@ -1,0 +1,83 @@
+\documentclass[runningheads,a4paper]{llncs}
+\newcommand*{\rootPath}{./}
+
+\input{\rootPath Annexes/Packages.tex}
+%\newcolumntype{C}[1]{>{\centering}m{#1}}
+%\newcolumntype{C}[1]{>{\centering\raggedright\arraybackslash}m{#1}}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\standalonetrue
+
+\title{TP C++ : gestion des classes abstraites dans Darwin-Op}
+\titlerunning{TP C++}
+
+\author{Pierre-Louis Guhur,  \inst{1}
+        Thomas Rodet \inst{1}}
+\authorrunning{Guhur et Rodet}
+\institute{
+ENS Paris-Saclay (France)
+}
+
+
+\makeglossaries
+
+\begin{document}
+
+
+
+
+
+\maketitle
+
+\begin{abstract}
+C++ est un langage de programmation qui est compilé, avec une large variété de plateformes le supportant.
+Il implémente différentes paradigmes, comme la programmation procédurale  la programmation orientée objet, et la programmation générique.
+C'est l'un des langages les plus populaires, et est disponible sur la plupart des plateformes.
+L'objectif de ce TP est de visiter certains concepts propres à ce langage.
+On s'appliquera sur une application réelle : le robot Darwin-Op.
+Ainsi, à la fin du TP, on pourra programmmer une séquence de mouvements.
+\end{abstract}
+
+
+
+\include{\rootPath Annexes/glossary}
+
+\input{\rootPath Parts/introduction}
+\input{\rootPath Parts/exploration}
+\input{\rootPath Parts/mouvement}
+
+
+
+\section{Conclusion}
+\label{sec:ccl}
+
+
+Ce TP a permis d'explorer le langage C++ et de se familiariser avec le robot Darwin-Op. En particulier, les concepts suivants ont été vus :
+\begin{itemize}
+    \item utilisation d'un framework au-dessus d'un système d'exploitation pour programmer un robot (ce qui n'est pas sans rappelé ROS) ;
+    \item programmation orienté objet et générique avec les concepts d'héritages, de classes abstraites et de templates ;
+    \item l'existance de designs de programmation comme celui du singleton ;
+    \item des structures de données comme les containeurs et les listes chaînées.
+\end{itemize}
+On pourra continuer d'explorer le C++ avec les expressions lambda \cite{lambda}, ou la différence entre le polymorphisme statique et dynamique. La lecture de livres spécialisés est recommandée \cite{gamma1995design}, \cite{jumpingallain}. 
+
+
+
+
+%%=============================================================================
+%%=============================================================================
+\ifstandalone
+
+    \appendix
+    \printglossary[title=Vocabulaire et abbréviations]
+	\bibliographystyle{IEEEtran}
+	\bibliography{\rootPath Annexes/biblio.bib}
+\fi
+%%=============================================================================
+%%=============================================================================
+
+
+
+\end{document}
