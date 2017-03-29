@@ -82,6 +82,9 @@ int main(void)
 	liste.push_front(2);
 	liste.push_front(1);
 
+
+
+
 	for (Iterateur iter = liste.begin();
 	     iter != liste.end(); ++iter)
 	{
