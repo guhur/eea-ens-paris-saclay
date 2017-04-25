@@ -12,17 +12,6 @@ esp.listen(5)
 client_esp, client_addrinfo = esp.accept
 puts "Connected to ESP8266"
 
-#
-# esp = TCPServer.new 8266
-# client_esp = esp.accept
-
-# loop do
-#     data = receive(client_esp)
-#     if data != ""
-#         puts "I only received 20 bytes '#{data}'"
-#     end
-#
-# end
 
 loop do
     # try connect to simuDarwin.rb
