@@ -4,7 +4,9 @@ include Socket::Constants
 
 
 # initialize connection with tunnel.rb
-tunnel = TCPSocket.new 'localhost', 8266
+socket = Socket.new(AF_INET, SOCK_STREAM, 0)
+sockaddr = Socket.sockaddr_in(8266, '0.0.0.0')
+socket.connect(sockaddr)
 puts "Connected to DarwinOp"
 
 loop do
@@ -12,14 +14,14 @@ loop do
     str = checkSocket(2200, '0.0.0.0')
     if str != ""
         puts "ESP: #{str}"
-        client_esp.puts "ESP: #{str}"
+        socket.puts "ESP: #{str}"
     end
 
     # try read from tunnel.rb
-    data = receive(tunnel)
+    data = receive(socket)
     if data != ""
         puts "Darwin: #{line}"
     end
 end
 
-tunnel.close
+socket.close
