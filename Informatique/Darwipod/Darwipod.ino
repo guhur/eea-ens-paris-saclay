@@ -95,6 +95,66 @@ volatile bool mpuInterrupt = false;     // indicates whether MPU interrupt pin h
 void dmpDataReady() {
   mpuInterrupt = true;
 }
+
+
+/*****************************************/
+/* Fonctions pour le dongle wifi ESP8266 */
+/*****************************************/
+#define LENGTH 256
+#include <SoftwareSerial.h>
+SoftwareSerial wifi(2, 3);
+volatile int rx_wifi[5];
+char buff_wifi[LENGTH];
+/* initialisation */
+void ini_WiFi() {
+    Serial.begin(115200);     // opens serial port, sets data rate to 9600 bps
+    wifi.begin(115200);     // opens serial port, sets data rate to 9600 bps
+
+    while (wifi.available() <= 0) {
+      // initialisation d'une connexion
+      delay(1000);
+      #ifdef USE_LCD
+          lcd.setCursor(0, 2);
+          lcd.print("Wifi sending: AT");
+      #else 
+          Serial.print("Wifi sending: AT");
+      #endif
+      wifi.print("AT");
+    }
+
+    #ifdef USE_LCD
+          lcd.setCursor(0, 2);
+          lcd.print("Sending: AT+CIPMUX=1");
+    #else 
+          Serial.print("Sending: AT+CIPMUX=1");
+    #endif
+    wifi.print("AT+CIPMUX=1");
+    #ifdef USE_LCD
+        lcd.setCursor(0, 2);
+        lcd.print("Sending: AT+CIPSERVER=1,1336");
+    #else 
+        Serial.print("Sending: AT+CIPSERVER=1,1336");
+    #endif
+    wifi.print("AT+CIPSERVER=1,1336");
+}
+
+/* lit le dongle wifi et écrit les résultats dans le tableau rx_wifi */
+void rx_WiFi() {
+    if (wifi.available() > 0) {
+            for (int i =0;i<LENGTH;i++)
+                buff_wifi[i]= 0;
+            wifi.readBytes(buff_wifi, LENGTH);
+
+            rx_wifi[3] = 1;
+            rx_wifi[2] = 1;
+            rx_wifi[1] = 1;
+    } 
+    else {
+            rx_wifi[3] = 0;
+            rx_wifi[2] = 0;
+            rx_wifi[1] = 0;
+    }
+}
 /*********************************************
   ISR de réception de la télécommande
   décodage des impulsions reçues
@@ -315,6 +375,9 @@ void setup() {
   pinMode(In_ki, INPUT);
   pinMode(In_kd, INPUT);
 
+
+  ini_WiFi();
+
 }
 /**************************************************/
 void loop() {
@@ -386,9 +449,16 @@ void loop() {
       //          sprintf(serialbuff,"%d %d %d %d %d",rx_pulses[0],rx_pulses[1],rx_pulses[2],rx_pulses[3],rx_pulses[4]);
       //          Serial.println(serialbuff);
       //      }
+      
+      // réception wifi
+      rx_WiFi();
+      
       if (rx_pulses[3] > 0) {
         Setpoint = -(float)rx_pulses[1] / 20;
         traject = round((float)rx_pulses[2] / 30);
+      } else if (rx_wifi[3] > 0) {
+        Setpoint = -(float)rx_wifi[1] / 20;
+        traject = round((float)rx_wifi[2] / 30);
       } else {
         Setpoint = 0;
         traject = 0;
