@@ -7,11 +7,11 @@
 
 <head>
 	<meta charset="utf-8"/>
-	<link rel="icon" type="image/ico" href="favicon.ico"> 
+	<link rel="icon" type="image/ico" href="favicon.ico">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 	<style>
-		
+
 		.rogneur {
 		    height: 480px;
 		    width: 640px;
@@ -22,8 +22,8 @@
 			height: 50%;
 
 		}
- 
-		
+
+
 		img {
 		    height: 480px;
 		    width: auto;
@@ -34,7 +34,7 @@
 		}
 		i {
 			    font-size: 10em;
-		}		
+		}
 #exec {
 	display: none;
 }
@@ -64,7 +64,7 @@ a {
 		}
 		function zoom(v) {
 			img = document.getElementById("image")
-			h = parseInt(img.style.height, 10) + v 
+			h = parseInt(img.style.height, 10) + v
 			if((h  < 10000) && (h  > 480)) {
 				img.style.height = h + "px"
 				img.style.marginLeft = parseInt(img.style.marginLeft, 10) - v/2 + "px"
@@ -94,12 +94,21 @@ a {
 				case 3:
 					file = 'recule.cgi';
 					break;
-			//	case 4:
-			//		file = 'rotation-gauche.cgi';
-			//		break;
-			//	case 5:
-			//		file = 'rotation-droite.cgi';
-			//		break;
+				case 4:
+					file = 'initialisation.cgi';
+					co = document.getElemengetElementById('connect');
+					co.onmousedown = "action(6);"
+					co.ontouchstart = "action(6);"
+					break;
+				case 5:
+					file = 'read.cgi';
+					break;
+				case 6:
+					file = 'disconnect.cgi';
+					co = document.getElemengetElementById('connect');
+					co.onmousedown = "action(4);"
+					co.ontouchstart = "action(4);"
+					break;
 				default:
 					file = 'stop.cgi';
 					break;
@@ -116,13 +125,13 @@ a {
 
 </div>
 	</br>
-	
+
 	<table border="1" cellspacing="0" cellpadding="0" style="width: 100%" border="0">
 
 		<tr>
-			<!--<td><a ontouchstart="action(4);" ontouchend="action(-1)" onmousedown="action(4);" onmouseup="action(-1)"><button><i class="fa fa-repeat fa-5x" aria-hidden="true"></i></button></a></td>			-->	
-			<td><a ontouchstart="action(0);" ontouchend="action(-1)"  onmousedown="action(0);" onmouseup="action(-1)"><button><i class="fa fa-arrow-up fa-5x" aria-hidden="true"></i></button></a></td><!--
-			<td colspan="3"><a ontouchstart="action(5);" ontouchend="action(-1)"  onmousedown="action(5);" onmouseup="action(-1)"><button><i class="fa fa-undo fa-5x" aria-hidden="true"></i></button></a></td>-->
+			<td><a id="connect" ontouchstart="action(4);"  onmousedown="action(4);"><button><i class="fa fa-power-off fa-5x" aria-hidden="true"></i></button></a></td>
+			<td><a ontouchstart="action(0);" ontouchend="action(-1)"  onmousedown="action(0);" onmouseup="action(-1)"><button><i class="fa fa-arrow-up fa-5x" aria-hidden="true"></i></button></a></td>
+			<td colspan="3"><a ontouchstart="action(5);" ontouchend="action(-1)"  onmousedown="action(5);" onmouseup="action(-1)"><button><i class="fa fa-book fa-5x" aria-hidden="true"></i></button></a></td>
 		</tr>
 		<tr>
 			<td><a ontouchstart="action(1);" ontouchend="action(-1)"  onmousedown="action(1);" onmouseup="action(-1)"><button><i class="fa fa-arrow-left fa-5x" aria-hidden="true"></i></button></a></td>
@@ -136,12 +145,8 @@ a {
 
 		</tr>
 	</table>
-	<!--<script>
-			document.getElementById("image").style.height = "480px" ;
-	</script>-->
 
 
-	<p align="Right"><font size="2">Made with <i class="fa fa-heart"></i> by Rémi Armand & Olivier Lévêque.</font></p>
-<iframe id="exec" src="stop.cgi" /> 
+<iframe id="exec" src="stop.cgi" />
 </body>
 </html>

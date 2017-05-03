@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'socket'
 include Socket::Constants
 require_relative 'serveur.rb'
@@ -5,7 +7,7 @@ require_relative 'serveur.rb'
 
 
 socket = Socket.new(AF_INET, SOCK_STREAM, 0)
-sockaddr = Socket.sockaddr_in(2200, '0.0.0.0')
+sockaddr = Socket.sockaddr_in(1336, '192.168.4.1')
 socket.setsockopt(Socket::SOL_SOCKET, Socket::SO_REUSEADDR, true)
 socket.bind(sockaddr)
 socket.listen(5)

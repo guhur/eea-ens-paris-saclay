@@ -1,1 +1,6 @@
-{ echo "droite" ; sleep 1; } | telnet 192.168.4.1 1336
+#!/usr/bin/env ruby
+
+require_relative 'serveur.rb'
+
+f = File.basename(__FILE__, ".cgi")
+query f

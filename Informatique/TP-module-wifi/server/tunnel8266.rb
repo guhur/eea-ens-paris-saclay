@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'socket'
 require_relative 'serveur.rb'
 include Socket::Constants
@@ -20,7 +22,7 @@ loop do
     # try read from tunnel.rb
     data = receive(socket)
     if data != ""
-        puts "Darwin: #{line}"
+        puts "Darwin: #{data}"
     end
 end
 
