@@ -1,0 +1,233 @@
+\documentclass[abstracton]{scrartcl}
+\newcommand*{\rootPath}{../}
+\input{\rootPath Annexes/Packages.tex}
+
+\standalonetrue
+
+\begin{document}
+\lstset{language=C++}
+%%=============================================================================
+
+
+
+%%=============================================================================
+%-------------------------------------------------------------------------------
+%   DIAGRAMME CLASSES
+%-------------------------------------------------------------------------------
+
+\section{Rappels en C++}
+\label{sec:rappels}
+
+
+\subsection{Programmation orientée objet}
+La programmation orientée objet consiste en la définition et l'interaction de briques logicielles appelées objets ; un objet représente un concept, une idée ou toute entité du monde physique, comme une voiture, une personne ou encore une page d'un livre. Il possède une structure interne et un comportement, et il sait interagir avec ses pairs.
+
+Une \emph{classe} est un schéma utilisé pour créer des objets. Un \emph{objet} est une \emph{instance} d'une classe - c'est la concrétisation obtenue depuis le schéma. Ainsi, une instance renseigne sur la relation entre un objet et sa classe.
+
+Prenons un exemple : on modélise un appartement avec la classe \inlinecode{Chambre}. La chambre possède plusieurs variables (appelées attributs) et plusieurs fonctions (appelées méthodes). Notre chambre est un objet, et est une instance de la classe Chambre. La chambre de notre colocataire est un autre objet (et une autre instance de la classe Chambre).
+
+En C++, cela s'écrit :
+\begin{lstlisting}
+class Chambre {
+    // ...
+}
+
+// On peut utiliser le schema pour creer differents objets
+// (des instances de la classe Chambre)
+Chambre maChambre = new Chambre();
+Chambre colocChambre = new Chambre();
+\end{lstlisting}
+
+Dans une chambre, on retrouve généralement un lit et une armoire : ce sont les attributs de la classe.
+Les bonnes règles de programmation demandent d'encapsuler les attributs, c'est-à-dire qu'on protège leur accès  en dehors de la classe.
+Si on veut les lire ou les modifier, on passera par des méthodes pour cela : par exemple, \lstinline{getValue} pour lire l'attribut \lstinline{Value} ou \lstinline{setValue} pour la modifier.
+Le C++ utilise les mots-clés \lstinline{public} ou \lstinline{private} pour préciser si un attribut ou une méthode est accessible depuis l'extérieur :
+
+
+\begin{lstlisting}
+class Chambre {
+   public:
+      Chambre(); // constructeur
+	  void Sortir(); // methode public
+      void GetBed();
+      void SetBed();
+      Meuble Armoire; // attribut public
+   private:
+   	  Meuble Bed;   // attribut prive
+	  void Nettoyage(); // methode privee
+      void Entrer();
+}
+
+Chambre maChambre = new Chambre();
+Meuble armoire = new Armoire();
+// On peut acceder aux elements publics :
+maChambre.Sortir();
+maChambre.armoire = armoire;
+maChambre.GetBed();
+// Mais pas a ceux prives :
+ maChambre.Nettoyage(); // erreur !!
+ maChambre.Bed; // erreur !!
+\end{lstlisting}
+
+Ce code possède également un \emph{constructeur} : c'est la fonction qui est appelée lorsque la classe est instanciée. Elle est publique, autrement la ligne \lstinline{Chambre maChambre = new Chambre();} retournerait une erreur. On ne définit pas de type de retour, car le constructeur retourne nécessairement une instance de classe en question.
+
+On peut définir de même des \emph{destructeurs} sous la forme \lstinline{void ~Chambre();}, qui sont exécutés lors de la destruction de l'objet.
+
+% \subsection{Héritage}
+%
+% L’héritage est la définition d’une classe par extension des caractéristiques d’une autre classe. L’héritage est un concept puissant de la programmation orientée objet, permettant entre autres la réutilisabilité (décomposition du système en composants). Le principe est similaire  à un arbre généalogique : des classes appelées \emph{filles} héritent des caractéristiques de leur(s) \emph{mère(s)}, et  peuvent alors utiliser les caractéristiques de leur(s) mère(s).
+%
+% \begin{lstlisting}
+% class Logement {
+% 	public:
+% 		Cuisine cuisine;
+%   		SalleDeBain sdb;
+% 	private:
+% 		Lit lit;
+% }
+% class Chambre : public Logement {
+%    public:
+% 	  void Sortir();
+%    private:
+% 	  void Nettoyage();
+%       void Entrer();
+% }
+%
+% Chambre maChambre = new Chambre();
+% maChambre.sdb = new SalleDeBain(); // pas d'erreur
+% maChambre.lit = new Lit(); // erreur : on herite pas d'un attribut prive.
+% \end{lstlisting}
+%
+% Dans cet exemple, la salle de bain est définie par la classe mère (Logement) : une chambre en hérite et ne la re-définit pas. En revanche, la chambre n'a pas accès au lit car le lit est un attribut privé d'un logement.
+%
+% La classe mère peut posséder des fonctions dites \emph{virtuelles} : cette fonction n'est pas implémentée chez la mère.
+% Si toutes les méthodes de la mère sont virtuelles, alors la classe mère est dite \emph{abstraite}. Cela permet d'assurer une conformité entre les classes : la classe mère est alors appelée une \emph{interface}. Par exemple :
+%
+% \begin{lstlisting}
+% class Logement {
+% 	public:
+% 		Cuisine cuisine;
+%   		SalleDeBain sdb;
+% 		virtual void Entrer();
+% 		virtual void Sortir();
+% 	private:
+% 		Lit lit;
+% }
+% class Chambre : public Logement {
+%    public:
+% 	  void Sortir();
+%    private:
+% 	  void Entrer();
+% 	  void Nettoyage();
+% }
+%
+% class Maison : public Logement {
+% 	public:
+% 	   void Sortir();
+% 	private:
+% 	   void Entrer();
+% 	   Piece salon;
+% 	   Piece bureau;
+% }
+% \end{lstlisting}
+%
+% En plus de \inlinecode{private} et \inlinecode{public}, le C++ définit aussi \inlinecode{protected} pour des éléments qui ne sont pas accessibles depuis l'extérieur mais dont les classes filles héritent.
+
+
+
+\subsection{Classe amie}
+
+Une classe A peut accéder aux membres privés et protégés d'une classe B, lorsque celle-ci précise que la classe A est son amie.
+
+Ce paradigme évite de pratiquer à de l'héritage lorsque la relation entre les deux classes ne correspond pas à une spécialisation. En revanche, il augmente le couplage entre les deux classes, et doit être utilisé avec parcimonie.
+
+\begin{lstlisting}
+class B {
+    friend class A; // A est une amie de B
+
+private:
+    int i;
+};
+
+class A {
+public:
+    A(B b) {
+        b.i = 0; // pas d'erreurs
+    }
+};
+\end{lstlisting}
+
+L'amitié n'est pas symétrique : si A est une amie de B, B n'est pas forcément une amie de A. Elle n'est pas non plus transitive : si A est une amie de B, C est une amie de B, A n'est pas forcément une amie de C, ni même héritée : si A est une amie de B, les filles de A ne seront pas forcément des amies de B, et A n'est pas forcément une amie des filles de B.
+
+
+
+\subsection{Conteneurs}
+
+Un \emph{conteneur} est une classe dont les instances sont des collections d'autres objets. Autrement dit, ils stockent des objets, selon un ordre spécifique. La taille d'un conteneur dépend donc du nomber d'objets qu'il contient. Un exemple de conteneur est une liste de la librairie standard :
+
+\begin{lstlisting}
+#include <iostream>
+#include <list>
+
+int main ()
+{
+  std::list<int> liste;
+  int entier;
+
+  std::cout << "Ajouter des entiers a la liste (0 le dernier):\n";
+
+  do {
+    std::cin >> entier;
+    liste.push_back (entier);
+  } while (myint);
+
+  std::cout << "La liste stocke " << liste.size() << " nombres.\n";
+
+  return 0;
+}
+\end{lstlisting}
+
+On verra dans le second TP comment un conteneur peut stocker des objets de type inconnu.
+
+\subsection{Itérateurs}
+
+Un itérateur est un objet qui permet de traverser un conteneur et retourner les données, en particulier des listes. Différents types d'itérateurs sont utilisés à travers l'interface du conteneur.
+
+Par exemple pour les \emph{std::list} on peut faire :
+
+\begin{lstlisting}
+#include <iostream>
+#include <list>
+
+int main ()
+{
+  int tableau[5] = {75,23,65,42,13};
+  std::list<int> liste(tableau,tableau+5);
+
+  std::cout << "La liste contient :";
+  for (std::list<int>::iterator it=liste.begin(); it != liste.end(); ++it)
+    std::cout << ' ' << *it;
+
+  std::cout << '\n';
+
+  return 0;
+}
+\end{lstlisting}
+
+
+
+\subsection{Surcharge d'opérateurs}
+
+Comment interpréter l'addition suivante :
+\begin{lstlisting}
+Rectangle A = new Rectangle(5,6);
+Rectangle B = new Rectangle(6,2);
+Rectangle C = A + B;
+\end{lstlisting}
+
+Si cela paraît évident pour des entiers, l'opération d'addition devient plus délicate pour des classes. Le C++ propose un mécanisme, appelé la \emph{surcharge d'opérateurs} pour définir des opérateurs $+, -, /, [], ...$ aux objets.
+
+Par exemple, pour l'addition, on définira la fonction \lstinline{Rectangle operator++(const Rectangle&)}. On notera que l'addition retourne un Rectangle, autrement comment interpréter $A + B + C$ ? En outre, on utilise \lstinline{const &} pour prémunir tout autre traitement que la lecture des éléments de l'objet.
+
+
+\end{document}

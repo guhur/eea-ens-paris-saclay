@@ -1,0 +1,61 @@
+\documentclass[abstracton]{scrartcl}
+\newcommand*{\rootPath}{../}
+\input{\rootPath Annexes/Packages.tex}
+
+\standalonetrue
+
+\begin{document}
+\lstset{language=C++}
+%%=============================================================================
+
+
+
+%%=============================================================================
+%-------------------------------------------------------------------------------
+%   Iterateur
+%-------------------------------------------------------------------------------
+
+\section{Programmation d'un itérateur}
+\label{sec:exploration}
+
+
+
+On propose de compléter cette liste chaînée afin d'en faire un itérateur. Pour cela, on créera une nouvelle classe \lstinline{Iterateur}, qui va gérer un curseur sur un nœud (dont le pointeur est stocké dans un attribut). Cette classe doit implémenter les méthodes suivantes :
+\begin{itemize}
+    \item \lstinline{void operator++();}
+	\item \lstinline{bool operator!=(Iterateur rval);}
+	\item \lstinline{bool operator==(Iterateur rval);}
+	\item \lstinline{int operator*();}
+\end{itemize}
+
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=4in]{\rootPath diagramme-classes-2.png}
+	\caption{Diagramme des classes}
+	\label{fig:d-c2}
+\end{figure}
+
+
+\Que{Faire apparaître les relations entre les classes dans la figure \ref{fig:d-c2}}
+
+\Ans{
+\begin{figure}
+	\centering
+	\includegraphics[width=4in]{\rootPath diagramme-classes-3.png}
+	\caption{Diagramme des classes}
+	\label{fig:d-c2}
+\end{figure}
+}
+
+\Que{Quelle classe est désormais amie avec quelle classe ?}
+\Ans{ListeChainee est amie avec Iterateur et Noeud. Iterateur est amie avec Noeud.}
+
+
+\Que{Implémentez l'itérateur des nœuds. Proposez un exemple de boucle \lstinline{for} pour parcourir la liste chaînée.}
+
+\Ans{\lstinputlisting[language=C++, firstline=1, lastline=73]{\rootPath Code/ListeChaineeIterateur.cpp}}
+
+
+\end{document}

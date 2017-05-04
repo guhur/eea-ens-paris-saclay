@@ -1,0 +1,60 @@
+% \documentclass[runningheads,a4paper]{llncs}
+\documentclass[abstracton]{scrartcl}
+% \documentclass{exam}
+\newcommand*{\rootPath}{./}
+
+\input{\rootPath ../Annexes/Packages.tex}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\standalonetrue
+
+\title{TP C++ : programmation générique à partir d'une liste chaînée}
+
+% \author{Pierre-Louis Guhur,      Thomas Rodet}
+\author{Pierre-Louis Guhur\footnote{Sous la supervision de Thomas Rodet}}
+
+\makeglossaries
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Le premier TP a permis de visiter certains concepts sur le C++ autour de la programmation orientée objet. Ce second TP s'applique au principe de généricité et de polymorphisme.
+On continuera le développement de la liste chaînée en intégrant la possibilité d'avoir plusieurs types d'objets dans notre liste.
+\end{abstract}
+
+
+
+
+\input{\rootPath TP2/genericite}
+\input{\rootPath TP2/template}
+
+
+
+%
+% \section{Conclusion}
+% \label{sec:ccl}
+%
+
+
+
+
+
+%%=============================================================================
+%%=============================================================================
+\ifstandalone
+
+    \appendix
+    \printglossary[title=Vocabulaire et abbréviations]
+	\bibliographystyle{IEEEtran}
+	\bibliography{\rootPath ../Annexes/biblio.bib}
+\fi
+%%=============================================================================
+%%=============================================================================
+
+
+
+\end{document}

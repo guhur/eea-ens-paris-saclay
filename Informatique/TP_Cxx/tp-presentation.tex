@@ -1,0 +1,90 @@
+% \documentclass[runningheads,a4paper]{llncs}
+\documentclass[abstracton]{scrartcl}
+% \documentclass{exam}
+\newcommand*{\rootPath}{./}
+
+\input{\rootPath Annexes/Packages.tex}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\standalonetrue
+
+\title{Séries de travaux pratiques en C++}
+
+
+\author{Pierre-Louis Guhur,      Thomas Rodet}
+
+
+
+\makeglossaries
+
+\begin{document}
+
+
+
+
+
+\maketitle
+
+\begin{abstract}
+C++ est un langage de programmation qui est compilé, avec une large variété de plateformes le supportant.
+Il implémente différentes paradigmes, comme la programmation procédurale  la programmation orientée objet, et la programmation générique.
+C'est l'un des langages les plus populaires, et est disponible sur la plupart des plateformes.
+En particulier, il est utilisé pour coder le robot Darwin-Op.
+L'objectif de cette série de travaux pratiques sur le C++ est de visiter certains concepts propres à ce langage et de les expérimenter sur le robot.
+Deux mini-projets sont proposées : le premier réalise une liste chaînée, et le second un module de mouvement pour le robot.
+\end{abstract}
+
+
+\section{Présentation des différents travaux pratiques}
+\label{sec:presentation}
+
+\begin{enumerate}
+    \item à partir des listes chaînées, découvrir la programmation orientée objet
+    \item amélioration du code des listes chaînées en intégrant des templates de classes
+    \item familiarisation avec le robot : analyse du diagramme des classes et implémentation d'un module de mouvement pour gérer le mouvement d'un bras
+    \item développement d'un projet pour recopier la position d'un bras imposé sur l'autre bras.
+\end{enumerate}
+
+
+\section{Volume horaire}
+\label{sec:heures}
+
+\section{Inscription dans une séquence pédagogique}
+\label{sec:sequence}
+
+
+
+
+% \section{Conclusion}
+% \label{sec:ccl}
+
+%
+% Ce TP a permis d'explorer le langage C++ et de se familiariser avec le robot Darwin-Op. En particulier, les concepts suivants ont été vus :
+% \begin{itemize}
+%     \item utilisation d'un framework au-dessus d'un système d'exploitation pour programmer un robot (ce qui n'est pas sans rappelé ROS) ;
+%     \item programmation orienté objet et générique avec les concepts d'héritages, de classes abstraites et de templates ;
+%     \item l'existance de designs de programmation comme celui du singleton ;
+%     \item des structures de données comme les containeurs et les listes chaînées.
+% \end{itemize}
+% On pourra continuer d'explorer le C++ avec les expressions lambda \cite{lambda}, ou la différence entre le polymorphisme statique et dynamique. La lecture de livres spécialisés est recommandée \cite{gamma1995design}, \cite{jumpingallain}.
+
+
+
+
+%%=============================================================================
+%%=============================================================================
+\ifstandalone
+
+    \appendix
+    \printglossary[title=Vocabulaire et abbréviations]
+	\bibliographystyle{IEEEtran}
+	\bibliography{\rootPath Annexes/biblio.bib}
+\fi
+%%=============================================================================
+%%=============================================================================
+
+
+
+\end{document}

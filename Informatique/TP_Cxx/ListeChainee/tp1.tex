@@ -1,0 +1,84 @@
+% \documentclass[runningheads,a4paper]{llncs}
+\documentclass[abstracton]{scrartcl}
+% \documentclass{exam}
+\newcommand*{\rootPath}{./}
+
+\input{\rootPath ../Annexes/Packages.tex}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\standalonetrue
+
+\title{TP C++ : programmation orientée objet et généricité à partir d'une liste chaînée}
+
+
+\author{Pierre-Louis Guhur\footnote{Sous la supervision de Thomas Rodet}}
+
+
+% \author{Pierre-Louis Guhur,  \inst{1}
+%         Thomas Rodet \inst{1}}
+% \authorrunning{Guhur et Rodet}
+% \institute{
+% ENS Paris-Saclay (France)
+% }
+
+
+\makeglossaries
+
+\begin{document}
+
+
+
+
+
+\maketitle
+
+\begin{abstract}
+C++ est un langage de programmation qui est compilé, avec une large variété de plateformes le supportant.
+Il implémente différentes paradigmes, comme la programmation procédurale  la programmation orientée objet, et la programmation générique.
+C'est l'un des langages les plus populaires, et est disponible sur la plupart des plateformes.
+L'objectif est de visiter certains concepts propres à ce langage.
+On s'appliquera sur le développement d'une liste chaînée, une structure de données représentant une collection ordonnée dont la représentation en mémoire de l'ordinateur est une succession de cellules faites d'un contenu et d'un pointeur vers une autre cellule. De façon imagée, l'ensemble des cellules ressemble à une chaîne dont les maillons seraient les cellules.
+Cette implémentation est séparée en deux travaux pratiques.
+\end{abstract}
+
+
+
+
+\input{\rootPath TP1/introduction}
+\input{\rootPath TP1/rappels}
+\input{\rootPath TP1/diagrammeClasses}
+\input{\rootPath TP1/iterateur}
+
+
+
+\section{Conclusion}
+\label{sec:ccl}
+
+
+Ce TP a permis d'explorer le langage C++. En particulier, les concepts suivants ont été vus :
+\begin{itemize}
+    \item programmation orienté objet et générique avec les concepts d'héritages, de classes abstraites et de templates ;
+    \item des structures de données : les listes chaînées.
+\end{itemize}
+On pourra continuer d'explorer le C++ avec les expressions lambda \cite{lambda}, ou la différence entre le polymorphisme statique et dynamique. La lecture de livres spécialisés est recommandée \cite{gamma1995design}, \cite{jumpingallain}.
+
+
+
+
+%%=============================================================================
+%%=============================================================================
+\ifstandalone
+
+    \appendix
+    \printglossary[title=Vocabulaire et abbréviations]
+	\bibliographystyle{IEEEtran}
+	\bibliography{\rootPath ../Annexes/biblio.bib}
+\fi
+%%=============================================================================
+%%=============================================================================
+
+
+
+\end{document}
