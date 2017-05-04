@@ -1,0 +1,34 @@
+\documentclass[abstracton]{scrartcl}
+\newcommand*{\rootPath}{../}
+\input{\rootPath Annexes/Packages.tex}
+
+\standalonetrue
+
+\begin{document}
+\lstset{language=C++}
+%%=============================================================================
+
+
+
+%%=============================================================================
+%-------------------------------------------------------------------------------
+%   Iterateur
+%-------------------------------------------------------------------------------
+
+\section{Programmation d'une classe template}
+\label{sec:classe-template}
+
+
+
+On propose de compléter la liste chaînée du TP précédent pour lui permettre de fonctionner avec n'importe quel type.
+
+
+\Que{Implémentez cette modification. Instanciez cette classe avec des entiers. Proposez un exemple de boucle \lstinline{for} pour parcourir la liste chaînée.}
+
+\Ans{\lstinputlisting[language=C++, firstline=1, lastline=86]{\rootPath Code/ListeChaineeFinale.cpp}}
+
+\Que{Créez un nouvel objet utilisé pour instancier la liste chaînée.}
+\Ans{\lstinputlisting[language=C++, firstline=87, lastline=103]{\rootPath Code/ListeChaineeFinale.cpp}}
+
+
+\end{document}

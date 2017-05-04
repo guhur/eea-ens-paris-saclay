@@ -1,0 +1,198 @@
+\documentclass[abstracton]{scrartcl}
+\newcommand*{\rootPath}{../}
+\input{\rootPath ./Annexes/Packages.tex}
+
+\standalonetrue
+
+\begin{document}
+\lstset{language=C++}
+%%=============================================================================
+
+\section{Polymorphisme}
+\label{sec:polymorphisme}
+
+
+Le polymorphisme fournit une interface unique à des entités pouvant avoir différents types. Par exemple, des opérations telles que la multiplication peuvent ainsi être étendues des scalaires aux vecteurs ou aux matrices, l'addition, des scalaires aux fonctions ou aux chaînes de caractères, etc.
+
+Il existe plusieurs sortes de polymorphismes fondamentalement différents.
+\begin{itemize}
+    \item \emph{polymorphisme ad hoc} ou \emph{surcharge} : une interface unique est implémentée par plusieurs routines ayant le même identifiant (par exemple le symbole +).
+    \item \emph{polymorphisme par sous-typage} ou \emph{héritage} : comme vu au TP précédent, une interface unique est implémentée par une classe mère puis chaque fille qui hérite de cette mère sera vue comme un cas particulier de la mère. L'exemple suivant est donc correct :
+        \begin{lstlisting}
+class A {
+    public:
+    A() {};
+};
+class B: public A {
+    public:
+B() {};
+};
+class C: public A {
+    public:
+C() {};
+};
+
+
+int main()
+{
+    A* tableau[3] = {new B, new C};
+  A* fille = new B();
+}
+        \end{lstlisting}
+
+    \item \emph{polymorphisme paramétré} ou \emph{programmation générique} :	une interface unique est implémentée avec un type générique pour au moins un de ses paramètres, comme on le voit par la suite. Cela abstrait les exigences fondamentales sur les types.
+
+
+\end{itemize}
+
+
+
+
+
+\subsection{Templates en C++}
+
+En C++, la programmation générique est réalisée grâce aux templates. Cette fonctionnalité permet de travailler sur différents types sans préciser lequel.
+
+Il existe trois genres de templates : les fonctions templates, les classes templates et, depuis C++14, les variables templates. C++11 a ajouté la possibilité de templates dits \emph{variadiques}.
+
+
+
+\subsubsection{Fonction templates}
+Une fonction template se comporte comme une fonction, à la différence qu'au moins un paramètre peut avoir différents types. Le format de déclaration d'une fonction templates est le suivant :
+\begin{lstlisting}
+    template <class nom_type> declaration_fonction;
+    template <typename nom_type> declaration_fonction;
+\end{lstlisting}
+
+La deuxième expression précise que le type du paramètre n'a pas besoin d'être une classe (il peut s'agir d'un type trivial comme int ou double).
+
+Par exemple, une fonction addition est définie par :
+\begin{lstlisting}
+double addition(double a, double b)
+{
+    double resultat = a + b;
+    return resultat;
+}
+int main () {
+double somme = addition(1.5, 1.5);
+cout <<  somme << endl;
+}
+\end{lstlisting}
+
+Plutôt que de réécrire cette fonction pour des int, on peut la modifier en :
+\begin{lstlisting}
+template<typename Type> Type
+    calculerSomme(Type operande1, Type operande2)
+{
+    Type resultat = operande1 + operande2;
+    return resultat;
+}
+int main () {
+int somme = calculerSomme(1, 2);
+cout <<  somme << endl;
+}
+\end{lstlisting}
+
+
+Cette définition fonctionne pour tous les types où l'opérateur + a été défini. On peut par exemple le faire avec l'objet suivant :
+\begin{lstlisting}
+#include <iostream>
+#include <string>
+#include <list>
+
+using namespace std;
+
+class Portefeuille
+{
+
+     float sous;
+     list<string> cartes;
+    public:
+     Portefeuille(float d) : sous(d) {};
+     list<string> getCards() const { return cartes;}
+     void addCards(list<string> c) {
+        cartes.insert(cartes.end(), c.begin(), c.end());
+     }
+     Portefeuille operator+( Portefeuille a) {
+        Portefeuille p(sous + a.sous);
+        p.addCards(getCards());
+        p.addCards(a.getCards());
+        return p;
+     }
+
+    friend ostream& operator<<(ostream& os, const Portefeuille& f);
+};
+
+ostream &operator<<(ostream &os, const Portefeuille& f) {
+    list<string> c = f.getCards();
+    for ( list<string>::iterator iterator = c.begin(), end = c.end();
+        iterator != end; ++iterator) {
+        os << *iterator << " ";
+    }
+    return os;
+}
+
+int main () {
+    Portefeuille a(6.5);
+    char const *la[] = {"VISA", "Navigo", "etudiant"};
+    a.addCards( list<string> (la, la + 3) );
+    Portefeuille b(55.6);
+    char const *lb[] = {"MasterCard", "Carrefour", "Velib"};
+    b.addCards( list<string> (lb, lb + 3) );
+    Portefeuille somme  = a + b;
+    cout <<  somme << endl; // VISA Navigo etudiant MasterCard Carrefour Velib
+}
+\end{lstlisting}
+
+A la différence d'un macro, un template ne produit pas un exécutable plus petit : une fonction sera créée pour chaque type utilisée lors de la compilation.
+
+
+
+\subsection{Classe templates}
+
+Une classe template permet de génerer une classe depuis un paramètre. Ils sont typiquement utilisés pour implémenter des conteneurs.
+
+L'utilisation est très similaire :
+\begin{lstlisting}
+    template <class A_Type> class calc
+    {
+      public:
+        A_Type multiplier(A_Type x, A_Type y);
+        A_Type additionner(A_Type x, A_Type y);
+    };
+    template <class A_Type> A_Type calc<A_Type>
+            ::multiplier(A_Type x,A_Type y)
+    {
+      return x*y;
+    }
+    template <class A_Type> A_Type calc<A_Type>
+            ::additionner(A_Type x, A_Type y)
+    {
+      return x+y;
+    }
+\end{lstlisting}
+
+On précise le type lorsqu'on instancie la classe : \lstinline{calc <double> a_calc_class;}.
+
+
+
+\subsection{Variable templates}
+
+Depuis C++14, les templates peuvent également être utilisés pour des variables, comme dans l'exemple suivant :
+\begin{lstlisting}
+template<typename T> constexpr T pi = T(3.141592653589793238462643383L);
+\end{lstlisting}
+
+% \todo{à garder?}
+
+% \subsection{Templates variadiques}
+% \todo{à garder?}
+% C++11 introduced variadic templates, which can take a variable number of arguments in a manner somewhat similar to variadic functions such as std::printf. Both function templates and class templates can be variadic
+
+
+
+
+
+
+
+\end{document}
