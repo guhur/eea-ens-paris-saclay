@@ -18,8 +18,8 @@
 #define STEPPER2  9
 #define STEPPER3  10
 #define STEPPER4  11
-#define STEPPERDELAY 8 //delay time in ms (min 8 w/o missing steps)
-#define WIFI_LENGTH 256              // length of a message (in bytes)
+#define STEPPERDELAY 80 //delay time in ms (min 8 w/o missing steps)
+#define WIFI_LENGTH 20              // length of a message (in bytes)
 #define WIFI_BAUDS  115200           // data rate with serial port
 
 bool sens = true; // true = forward, false = backward
@@ -42,7 +42,10 @@ void setup() {
 
 
 void loop() {
+//    transferSerials();
+    
     String msg = read_nonblocking().substring(11);
+//    msg = "avance";
     if (msg != "") {
       if(msg.substring(0,6) == "avance") {
           sens = true;
@@ -52,9 +55,10 @@ void loop() {
           on = true;
       } else if(msg.substring(0,4) == "stop") {
           on = false;
+          Serial.print("stop");
       } 
     }
-
+  
     if (on && sens) 
         forward();
     else if(on && !sens)

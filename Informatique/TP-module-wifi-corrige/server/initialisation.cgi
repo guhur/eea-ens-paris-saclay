@@ -7,7 +7,7 @@ options = {
     :logfile    => "./tunnel.log",
     :daemonize  => true,
     :port       => "1336",
-    :address    => "192.168.31.87"
+    :address    => "192.168.43.236"
 }
 
 Tunnel.new(options).run!

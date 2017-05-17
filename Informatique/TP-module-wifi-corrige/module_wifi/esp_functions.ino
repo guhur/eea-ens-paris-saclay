@@ -1,4 +1,5 @@
 void initialize_wifi() {
+//    Serial1.setTimeout(500);
     Serial.println("... wait for ESP8266");
     // wait that ESP8266 wakes up
     while (!Serial1);
@@ -19,13 +20,17 @@ void initialize_wifi() {
 }
 
 String read_nonblocking(){
+
   char msg[WIFI_LENGTH] = {0};
   for (int i =0;i<WIFI_LENGTH;i++)
         msg[i]= 0;
-  Serial1.readBytes(msg, WIFI_LENGTH);
-
-  for (int i =0;i<WIFI_LENGTH;i++) 
-      Serial.print(msg[i]);
+        
+  if (Serial1.available() > 0) {  
+    Serial1.readBytes(msg, WIFI_LENGTH);
+  
+    for (int i =0;i<WIFI_LENGTH;i++) 
+        Serial.print(msg[i]);
+  }
   return String(msg);
 }
 

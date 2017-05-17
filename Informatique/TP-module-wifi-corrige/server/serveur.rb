@@ -78,7 +78,7 @@ class Tunnel
     end
 
     def esp8266
-        @esp = Socket.tcp('192.168.31.87', 1336)
+        @esp = Socket.tcp(options[:address], options[:port])
         if !@esp.nil?
            puts "Connected to ESP8266"
         else
@@ -123,7 +123,7 @@ class Tunnel
                 @esp.puts "#{str}"
             end
 
-            # try read from ESP866
+            # try read from ESP8266
             data = receive(@esp)
             if data != ""
                 puts "ESP8266: #{data}"
