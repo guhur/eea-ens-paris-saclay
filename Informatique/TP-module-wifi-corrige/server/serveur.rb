@@ -68,8 +68,8 @@ class Tunnel
     def initialize(options)
         @options = options
         # daemonization will change CWD so expand relative paths now
-        options[:logfile] = File.expand_path(logfile) if logfile?
-        options[:pidfile] = File.expand_path(pidfile) if pidfile?
+        @options[:logfile] = File.expand_path(logfile) if logfile?
+        @options[:pidfile] = File.expand_path(pidfile) if pidfile?
         if logfile?
             redirect_output
         elsif daemonize?

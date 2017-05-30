@@ -3,14 +3,17 @@
 
 class Noeud
 {
-	friend class ListeChainee;
+	int _valeur;
+	Noeud* _suivant;
+public:
+	inline int getValeur() {return _valeur;}
+	inline Noeud* getSuivant() {return _suivant;}
+	inline void setSuivant(Noeud* suivant) {_suivant = suivant;}
 	Noeud () : _suivant(0) {}
 	Noeud (int valeur) : _valeur(valeur), _suivant(0) {}
 	Noeud (int valeur, Noeud* suivant) : _valeur(valeur),
 			_suivant(suivant){}
 	Noeud (Noeud* suivant) : _suivant(suivant) {}
-	int _valeur;
-	Noeud* _suivant;
 };
 
 class ListeChainee
@@ -27,7 +30,7 @@ public:
 			while (iter != 0)
 			{
 				Noeud* tmp = iter;
-				iter = iter->_suivant;
+				iter = iter->getSuivant();
 				delete tmp;
 			}
 		}
@@ -38,9 +41,9 @@ public:
 		if (debut)
 		{
 			Noeud *iter = debut;
-			for (; iter->_suivant != 0;
-				iter = iter->_suivant);
-			iter->_suivant = new Noeud(valeur);
+			for (; iter->getSuivant() != 0;
+				iter = iter->getSuivant());
+			iter->setSuivant(new Noeud(valeur));
 		}
 		else
 			debut = new Noeud(valeur);
@@ -51,7 +54,7 @@ public:
 		if (debut)
 		{
 			Noeud * tmp = new Noeud(valeur);
-			tmp->_suivant = debut;
+			tmp->setSuivant(debut);
 			debut = tmp;
 		}
 		else
@@ -61,11 +64,11 @@ public:
 	int get_value(int n) {
 		Noeud *iter = debut;
 		for (int i = 0; i < n; i++) {
-				iter = iter->_suivant;
-				if (!iter->_suivant)
+				iter = iter->getSuivant();
+				if (!iter->getSuivant())
 					throw std::runtime_error("Erreur: le noeud n'existe pas !");
 		}
-		return iter->_valeur;
+		return iter->getValeur();
 	}
 };
 

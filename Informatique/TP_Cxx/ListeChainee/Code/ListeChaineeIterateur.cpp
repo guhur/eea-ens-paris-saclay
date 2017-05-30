@@ -2,26 +2,27 @@
 
 class Noeud
 {
-	friend class ListeChainee;
-	friend class Iterateur;
+	int _valeur;
+	Noeud* _suivant;
+public:
+	inline int getValeur() {return _valeur;}
+	inline Noeud* getSuivant() {return _suivant;}
+	inline void setSuivant(Noeud* suivant) {_suivant = suivant;}
 	Noeud () : _suivant(0) {}
 	Noeud (int valeur) : _valeur(valeur), _suivant(0) {}
 	Noeud (int valeur, Noeud* suivant) : _valeur(valeur), _suivant(suivant){}
 	Noeud (Noeud* suivant) : _suivant(suivant) {}
-	int _valeur;
-	Noeud* _suivant;
 };
 
 class Iterateur
 {
-	friend class ListeChainee;
 	Noeud* pNoeud;
-	Iterateur(Noeud* _pNoeud) : pNoeud(_pNoeud) {}
 public:
-	void operator++(){ pNoeud = pNoeud->_suivant; }
+	Iterateur(Noeud* _pNoeud) : pNoeud(_pNoeud) {}
+	void operator++(){ pNoeud = pNoeud->getSuivant(); }
 	bool operator!=(Iterateur rval){ return !(pNoeud == rval.pNoeud); }
 	bool operator==(Iterateur rval){ return (pNoeud == rval.pNoeud); }
-	int operator*(){	return pNoeud->_valeur; }
+	int operator*(){	return pNoeud->getValeur(); }
 };
 
 
@@ -40,7 +41,7 @@ public:
 			while (iter != 0)
 			{
 				Noeud* tmp = iter;
-				iter = iter->_suivant;
+				iter = iter->getSuivant();
 				delete tmp;
 			}
 		}
@@ -51,8 +52,8 @@ public:
 		if (debut)
 		{
 			Noeud *iter = debut;
-			for (; iter->_suivant != 0; iter = iter->_suivant); //parcours de la liste
-			iter->_suivant = new Noeud(valeur);
+			for (; iter->getSuivant() != 0; iter = iter->getSuivant()); //parcours de la liste
+			iter->setSuivant(new Noeud(valeur));
 		}
 		else
 			debut = new Noeud(valeur);
@@ -63,7 +64,7 @@ public:
 		if (debut)
 		{
 			Noeud * tmp = new Noeud(valeur);
-			tmp->_suivant = debut;
+			tmp->setSuivant(debut);
 			debut = tmp;
 		}
 		else
